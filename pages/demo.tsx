@@ -1,7 +1,7 @@
 async function showPlaylist(offset: number){
   const url = `https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg?picmid=1&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0&categoryId=10000000&sortId=5&sin=${offset}&ein=${29 +
   offset}`;
-  await fetch(url, {
+  return await fetch(url, {
     headers: {
       Referer: 'https://y.qq.com/',
     },
@@ -17,15 +17,17 @@ async function showPlaylist(offset: number){
       return playlists
     })
     .catch((err) => {
-      // console.error(err);
+      // console.error(err); 
     });
 }
 
-export default function Demo() {
+export default async function Demo() {
+  const data = await showPlaylist(0)
+  console.log('data', data[0].id)
   
   return (
     <>
-      <showPlaylist/>
+      <h2>{data[0]}</h2>
     </>
   )
 }
