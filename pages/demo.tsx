@@ -1,7 +1,9 @@
-async function showPlaylist(offset: number){
+import { Suspense } from "react";
+
+function Showplaylists({ offset }: { offset: number }){
   const url = `https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg?picmid=1&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0&categoryId=10000000&sortId=5&sin=${offset}&ein=${29 +
   offset}`;
-  return await fetch(url, {
+  return fetch(url, {
     headers: {
       Referer: 'https://y.qq.com/',
     },
@@ -14,20 +16,33 @@ async function showPlaylist(offset: number){
         id: `qqplaylist_${item.dissid}`,
         source_url: `http://y.qq.com/#type=taoge&id=${item.dissid}`,
       }));
-      return playlists
+      return (
+        <div>
+          {
+            playlists.map((item:any, index:number) => (
+              <div key={index}>
+                <img width={300} src={item.cover_img_url}/>
+                <h2>{item.title}</h2>
+                <div>{item.id}</div>
+                <div><a href={item.source_url}>{item.title}</a></div>
+              </div>
+            ))
+          }
+        </div>
+      )
     })
     .catch((err) => {
-      // console.error(err); 
+      console.error(err)
     });
 }
 
-export default async function Demo() {
-  const data = await showPlaylist(0)
-  console.log('data', data[0].id)
-  
+export default function Demo() {
   return (
     <>
-      <h2>{data[0]}</h2>
+      <Suspense fallback={<div>Loading...</div>}>
+        {/* @ts-expect-error Async Server Component */}
+        <Showplaylists offset={0} />
+      </Suspense>
     </>
   )
 }
